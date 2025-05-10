@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Structure du projet</title>
-  <style>
-    ul { list-style-type: none; padding-left: 20px; }
-    li::before { content: "├── "; color: #555; }
-    li:last-child::before { content: "└── "; }
-  </style>
-</head>
+
 <body>
   <h1>Structure du projet</h1>
   <ul>
@@ -49,5 +39,5 @@
     </li>
   </ul>
 </body>
-</html>
+
 
