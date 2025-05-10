@@ -1,0 +1,22 @@
+<div class="mt-5">
+    <h4>Diagramme Radar</h4>
+    <form method="get" class="mb-3">
+        <label for="agent" class="form-label">Sélectionnez un agent :</label>
+        <select name="agent" id="agent" class="form-select w-auto d-inline-block" onchange="this.form.submit()">
+            <option value="">-- Choisir un agent --</option>
+            {% for agent in agents %}
+                <option value="{{ agent.N }}" {% if agent.N|stringformat:"s" == selected_agent %}selected{% endif %}>
+                    {{ agent.nom }} {{ agent.prenom }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% if chart_div %}
+        <div class="mt-4">
+            {{ chart_div|safe }}
+        </div>
+    {% elif selected_agent %}
+        <div class="alert alert-warning">Aucune donnée de panne pour cet agent.</div>
+    {% endif %}
+</div>

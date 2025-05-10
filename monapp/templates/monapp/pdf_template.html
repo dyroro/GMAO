@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr">
+<head>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&amp;display=swap" rel="stylesheet" />
+    <style type="text/css">
+        /* Variables CSS modernes */
+        :root {
+            --primary: #3b82f6;
+            --secondary: #64748b;
+            --accent: #8b5cf6;
+            --background: #f8fafc;
+            --surface: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            max-width: 1200px;
+            background-color: var(--background);
+            color: #1e293b;
+            line-height: 1.5;
+        }
+
+        .container {
+            background: var(--surface);
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        h1, h2 {
+            color: var(--primary);
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--accent);
+            margin: 1rem auto;
+            border-radius: 2px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--surface);
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(145deg, var(--primary), #2563eb);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background 0.2s ease;
+        }
+
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+        .chart-container {
+            margin: 3rem 0;
+            padding: 1rem;
+            background: var(--surface);
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 0 auto;
+            border-radius: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+                margin: 0;
+            }
+
+            .container {
+                padding: 1rem;
+                border-radius: 0;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rapport Analytique</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Article</th>
+                    <th>Consommation</th>
+                    <th>Classification</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Insérer les données dynamiques ici -->
+                <tr>
+                    <td>XYZ-123</td>
+                    <td>1500 unités</td>
+                    <td>Catégorie A</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="chart-container">
+            <img src="data:image/png;base64,[...]" alt="Visualisation des données" />
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,253 @@
+{% include 'monapp/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Créer un Bon de Travail</title>
+  <style>
+    :root {
+      --sidebar-width: 250px;
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --danger-color: #e74c3c;
+      --light-color: #f8f9fa;
+      --dark-color: #343a40;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      min-height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 100;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+      padding-top: 50px;
+      background-color: var(--dark-color);
+    }
+
+    .sidebar-title {
+      color: white;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      margin-top: 20px;
+    }
+
+    .nav-pills .nav-link {
+      border-radius: 0.25rem;
+      margin: 0.25rem 0;
+      padding: 0.75rem 1rem;
+      transition: all 0.3s ease;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .nav-pills .nav-link:hover {
+      background-color: rgba(255,255,255,0.1);
+      color: white;
+      transform: translateX(5px);
+    }
+
+    .nav-pills .nav-link.active {
+      background-color: var(--primary-color);
+      color: white;
+      font-weight: 500;
+    }
+
+    /* Main Content Styles */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      padding: 20px;
+      transition: all 0.3s;
+    }
+
+    .card {
+      border: 1px solid #dee2e6;
+      border-radius: 0.75rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      background-color: #fff;
+    }
+
+    .breadcrumb {
+      background-color: transparent;
+      padding: 0;
+    }
+
+    .breadcrumb a {
+      text-decoration: none;
+    }
+
+    .input-group-text {
+      background-color: #e9ecef;
+      border-right: 0;
+    }
+
+    .form-control {
+      border-left: 0;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #6c757d;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row flex-nowrap">
+      <!-- Sidebar -->
+      <div class="col-auto col-md-3 col-xl-2 px-0 sidebar">
+        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 text-white min-vh-100">
+          <div style="height: 50px;"></div>
+          <h5 class="sidebar-title mb-4">Menu Principal</h5>
+
+          <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100">
+            <li class="nav-item w-100">
+              <a href="" class="nav-link text-white">
+                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+              </a>
+            </li>
+            <li class="nav-item w-100">
+              <a href="{% url 'declarer_panne' %}" class="nav-link text-white">
+                <i class="fa-solid fa-pen-to-square me-2"></i>Déclarer une panne
+              </a>
+            </li>
+            <li class="nav-item w-100">
+              <a href="{% url 'bon_form' %}" class="nav-link text-white active">
+                <i class="fas fa-file-alt me-2"></i>Bon de Travail
+              </a>
+            </li>
+            <li class="nav-item w-100">
+              <a href="{% url 'equipments' %}" class="nav-link text-white">
+                <i class="fas fa-cogs me-2"></i>Équipements
+              </a>
+            </li>
+            <li class="nav-item w-100">
+              <a href="{% url 'planning' %}" class="nav-link text-white">
+                <i class="fas fa-calendar-check me-2"></i>Planification
+              </a>
+            </li>
+            <li class="nav-item w-100">
+              <a href="{% url 'personnel_list' %}" class="nav-link text-white">
+                <i class="fas fa-users-cog me-2"></i>Personnel
+              </a>
+            </li>
+            <li class="nav-item w-100">
+              <a href="{% url 'historique' %}" class="nav-link text-white">
+                <i class="fas fa-history me-2"></i>Historique
+              </a>
+            </li>
+            <li class="nav-item w-100">
+              <a href="{% url 'dashboard' %}" class="nav-link text-white">
+                <i class="fas fa-file-contract me-2"></i>PPR
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col py-3 main-content">
+        <div class="container">
+          <!-- Breadcrumb -->
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'accueil' %}" class="text-secondary">Accueil</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Créer un Bon de Travail</li>
+            </ol>
+          </nav>
+
+          <!-- Formulaire -->
+          <div class="card p-4">
+            <h3 class="mb-4">Créer un Bon de Travail</h3>
+
+            <form method="post" novalidate>
+              {% csrf_token %}
+
+              <div class="row g-3">
+                <!-- Colonne 1 -->
+                <div class="col-md-6">
+                  <!-- N° -->
+                  <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-hashtag"></i></span>
+                    {{ form.numero|add_class:"form-control"|attr:"placeholder:Numéro" }}
+                  </div>
+
+                  <!-- Date -->
+                  <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                    {{ form.date|add_class:"form-control" }}
+                  </div>
+
+                  <!-- Demandeur -->
+                  <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    {{ form.demandeur|add_class:"form-control"|attr:"placeholder:Demandeur" }}
+                  </div>
+                </div>
+
+                <!-- Colonne 2 -->
+                <div class="col-md-6">
+                  <!-- Lieu -->
+                  <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                    {{ form.lieu|add_class:"form-control"|attr:"placeholder:Lieu" }}
+                  </div>
+
+                  <!-- Technicien -->
+                  <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-user-cog"></i></span>
+                    {{ form.technicien|add_class:"form-control" }}
+                  </div>
+
+                  <!-- Durée -->
+                  <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                    {{ form.duree|add_class:"form-control"|attr:"placeholder:Durée" }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Description (pleine largeur) -->
+              <div class="mb-4">
+                <label class="form-label fw-semibold"><i class="fas fa-align-left me-2"></i>Description</label>
+                {{ form.description|add_class:"form-control"|attr:"rows:3" }}
+              </div>
+
+              <!-- Bouton de soumission -->
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  <i class="fas fa-download me-2"></i> Générer le PDF
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Footer -->
+          <footer class="mt-4">
+            &copy; {% now "Y" %} Votre Société – Tous droits réservés
+          </footer>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+{% endblock %}

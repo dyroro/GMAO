@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page { margin: 30px; }
+    body {
+      font-family: DejaVu Sans, sans-serif;
+      color: #273043;
+      line-height: 1.5;
+    }
+    header {
+      border-bottom: 2px solid #0062E6;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header .logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #0062E6;
+    }
+    header h2 {
+      font-size: 18pt;
+      margin: 0;
+    }
+    .content {
+      margin-bottom: 30px;
+    }
+    .content .field {
+      margin-bottom: 10px;
+    }
+    .field .label {
+      font-weight: 600;
+      width: 130px;
+      display: inline-block;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+      font-size: 11pt;
+    }
+    table th {
+      background-color: #f0f4f8;
+      font-weight: 600;
+    }
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-top: 1px solid #ddd;
+      padding: 5px 0;
+      font-size: 9pt;
+      text-align: center;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">✅ Votre Société</div>
+    <h2>Bon de Travail<br/>{{ bon.numero }}</h2>
+  </header>
+
+  <div class="content">
+    <div class="field"><span class="label">Date :</span> {{ bon.date }}</div>
+    <div class="field"><span class="label">Demandeur :</span> {{ bon.demandeur }}</div>
+    <div class="field"><span class="label">Lieu :</span> {{ bon.lieu }}</div>
+    <div class="field"><span class="label">Description :</span> {{ bon.description }}</div>
+    <div class="field"><span class="label">Technicien :</span> {{ bon.technicien }}</div>
+    <div class="field"><span class="label">Durée :</span> {{ bon.duree }}</div>
+  </div>
+
+  <!-- Ex. de tableau pièces -->
+  {% if bon.pieces.exists %}
+  <table>
+    <thead>
+      <tr>
+        <th>Réf. pièce</th>
+        <th>Désignation</th>
+        <th>Quantité</th>
+        <th>Observations</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in bon.pieces.all %}
+      <tr>
+        <td>{{ p.ref }}</td>
+        <td>{{ p.designation }}</td>
+        <td>{{ p.quantite }}</td>
+        <td>{{ p.observations }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  <footer>
+    {{ now|date:"d/m/Y H:i" }} – www.votresociete.com – Page {{ page }} / {{ page_count }}
+  </footer>
+</body>
+</html>

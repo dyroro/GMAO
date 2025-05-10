@@ -1,0 +1,293 @@
+{% extends 'monapp/base.html' %}
+
+{% load static %}
+
+{% block content %}
+{% if user.is_authenticated %}
+
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <!-- Sidebar - Fixed to the left -->
+        <div class="col-auto col-md-3 col-xl-2 px-0 bg-dark sidebar">
+            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 text-white min-vh-100">
+                <!-- Espace vide de 50px avant le menu -->
+                <div style="height: 50px;"></div>
+
+                <h5 class="sidebar-title mb-4">Menu Principal</h5>
+
+                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100">
+                    <li class="nav-item w-100">
+                        <a href="" class="nav-link text-white active">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item w-100">
+                        <a href="{% url 'declarer_panne' %}" class="nav-link text-white">
+                            <i class="fa-solid fa-pen-to-square me-2"></i>Déclarer une panne
+                        </a>
+                    </li>
+                    <li class="nav-item w-100">
+                        <a href="{% url 'bon_form' %}" class="nav-link text-white">
+                            <i class="fas fa-file-alt me-2"></i>Bon de Travail
+                        </a>
+                    </li>
+                    <li class="nav-item w-100">
+                        <a href="{% url 'equipments' %}" class="nav-link text-white">
+                            <i class="fas fa-cogs me-2"></i>Équipements
+                        </a>
+                    </li>
+                    <li class="nav-item w-100">
+                        <a href="{% url 'planning' %}" class="nav-link text-white">
+                            <i class="fas fa-calendar-check me-2"></i>Planification
+                        </a>
+                    </li>
+                    <li class="nav-item w-100">
+                        <a href="{% url 'personnel_list' %}" class="nav-link text-white">
+                            <i class="fas fa-users-cog me-2"></i>Personnel
+                        </a>
+                    </li>
+                    <li class="nav-item w-100">
+                        <a href="{% url 'historique' %}" class="nav-link text-white">
+                            <i class="fas fa-history me-2"></i>Historique
+                        </a>
+                    </li>
+                    <li class="nav-item w-100">
+                        <a href="{% url 'dashboard' %}" class="nav-link text-white">
+                            <i class="fas fa-file-contract me-2"></i>PPR
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col py-3 main-content"> <!-- Changed structure -->
+            <div class="container-fluid">
+                <!-- Header -->
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Tableau de Bord</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Partager</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Exporter</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Metrics Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-4">
+                        <div class="card metric-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-subtitle mb-2 text-muted">Interventions</h6>
+                                        <h3 class="card-title mb-0">24</h3>
+                                    </div>
+                                    <div class="metric-icon bg-primary-light">
+                                        <i class="fas fa-tools text-primary"></i>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <span class="text-success">+12%</span> vs mois dernier
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <div class="card metric-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-subtitle mb-2 text-muted">MTTR (min)</h6>
+                                        <h3 class="card-title mb-0">{{context.MTTR}}</h3>
+                                    </div>
+                                    <div class="metric-icon bg-warning-light">
+                                        <i class="fa-solid fa-stopwatch text-warning"></i>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <span class="text-danger">-5%</span> vs mois dernier
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <div class="card metric-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="card-subtitle mb-2 text-muted">TRS (%)</h6>
+                                        <h3 class="card-title mb-0">{{context.TRS}}</h3>
+                                    </div>
+                                    <div class="metric-icon bg-success-light">
+                                        <i class="fa-solid fa-gears text-success"></i>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <span class="text-success">+8%</span> vs mois dernier
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pareto Chart Button -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <a href="{% url 'pareto' %}" class="btn btn-primary w-100">
+                            <i class="fas fa-chart-bar me-2"></i> Graphique de Pareto
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Notifications Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">
+                            <i class="fa-solid fa-bell me-2 text-primary"></i>
+                            Notifications Récentes
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            {% for notif in notifications %}
+                            <div class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <p class="mb-1">{{ notif.message }}</p>
+                                    <small class="text-muted">{{ notif.date|timesince }} ago</small>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="list-group-item">
+                                <p class="mb-1 text-muted">Aucune notification récente</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+   :root {
+        --sidebar-width: 250px;
+        --primary-color: #3498db;
+        --secondary-color: #2c3e50;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --danger-color: #e74c3c;
+        --light-color: #f8f9fa;
+        --dark-color: #343a40;
+    }
+
+    body {
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        background-color: #f5f7fa;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+        width: var(--sidebar-width);
+        min-height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 100;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        transition: all 0.3s;
+        padding-top: 50px; /* Ajouté pour décaler tout le contenu */
+    }
+
+    .sidebar-title {
+        color: white;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+        margin-top: 20px; /* Ajustement supplémentaire */
+    }
+
+    .nav-pills .nav-link {
+        border-radius: 0.25rem;
+        margin: 0.25rem 0;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        color: rgba(255,255,255,0.8);
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: rgba(255,255,255,0.1);
+        color: white;
+        transform: translateX(5px);
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: 500;
+    }
+
+    /* Main Content Styles */
+    .main-content {
+        margin-left: var(--sidebar-width);
+        padding: 20px;
+        transition: all 0.3s;
+    }
+    /* Metric Cards */
+    .metric-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-left: 4px solid transparent;
+    }
+
+    .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .metric-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+    }
+
+    .bg-primary-light {
+        background-color: rgba(52, 152, 219, 0.1);
+    }
+
+    .bg-success-light {
+        background-color: rgba(46, 204, 113, 0.1);
+    }
+
+    .bg-warning-light {
+        background-color: rgba(243, 156, 18, 0.1);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .sidebar {
+            width: 100%;
+            position: relative;
+            min-height: auto;
+        }
+
+        .main-content {
+            margin-left: 0;
+        }
+    }
+</style>
+{% else %}
+<!-- Unauthenticated Landing Page remains the same -->
+{% endif %}
+{% endblock %}

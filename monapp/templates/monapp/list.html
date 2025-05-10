@@ -1,0 +1,271 @@
+{% extends 'monapp/base.html' %}
+
+{% block content %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des équipements</title>
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            background-color: var(--dark-color);
+            padding-top: 50px;
+        }
+
+        .sidebar-title {
+            color: white;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .nav-pills .nav-link {
+            border-radius: 0.25rem;
+            margin: 0.25rem 0;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .nav-pills .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .filter-header input {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            padding: 5px 15px;
+            font-size: 0.9em;
+        }
+
+        .filter-header input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #e9ecef;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .bg-success { background-color: var(--success-color); }
+        .bg-danger { background-color: var(--danger-color); }
+        .bg-primary { background-color: var(--primary-color); }
+        .bg-light { background-color: var(--light-color); }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <!-- Sidebar -->
+            <div class="col-auto col-md-3 col-xl-2 px-0 sidebar">
+                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 text-white min-vh-100">
+                    <div style="height: 50px;"></div>
+                    <h5 class="sidebar-title mb-4">Menu Principal</h5>
+
+                    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100">
+                        <li class="nav-item w-100">
+                            <a href="{% url 'accueil' %}" class="nav-link text-white">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'declarer_panne' %}" class="nav-link text-white">
+                                <i class="fa-solid fa-pen-to-square me-2"></i>Déclarer une panne
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'bon_form' %}" class="nav-link text-white">
+                                <i class="fas fa-file-alt me-2"></i>Bon de Travail
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'equipments' %}" class="nav-link text-white active">
+                                <i class="fas fa-cogs me-2"></i>Équipements
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'planning' %}" class="nav-link text-white">
+                                <i class="fas fa-calendar-check me-2"></i>Planification
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'personnel_list' %}" class="nav-link text-white">
+                                <i class="fas fa-users-cog me-2"></i>Personnel
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'historique' %}" class="nav-link text-white">
+                                <i class="fas fa-history me-2"></i>Historique
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'dashboard' %}" class="nav-link text-white">
+                                <i class="fas fa-file-contract me-2"></i>PPR
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="col py-3 main-content">
+                <div class="container mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <nav aria-label="breadcrumb">
+                         <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'accueil' %}" class="text-secondary">Accueil</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Liste des équipements</li>
+                         </ol>
+                        </nav>
+                        <div>
+                            <a href="{% url 'pareto' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-chart-bar"></i> Pareto
+                            </a>
+                            <a href="{% url 'add_equipment' %}" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>N°</th>
+                                    <th>ID</th>
+                                    <th>Nom</th>
+                                    <th>Catégorie</th>
+                                    <th>PDR</th>
+                                    <th>Statut</th>
+                                    <th>Criticité</th>
+                                    <th>Type maintenance</th>
+                                    <th>Disponible</th>
+                                    <th>Dernière maintenance</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                                <tr class="filter-header">
+                                    {% for i in "x"|rjust:"10" %}
+                                    <td><input type="text" class="form-control" data-column="{{ forloop.counter0 }}" placeholder="Filtrer..."></td>
+                                    {% endfor %}
+                                    <td></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for equipment in equipments %}
+                                <tr>
+                                    <td class="text-muted">#{{ equipment.N }}</td>
+                                    <td><code>{{ equipment.IDD }}</code></td>
+                                    <td><strong>{{ equipment.name }}</strong></td>
+                                    <td><span class="badge bg-light text-dark">{{ equipment.category }}</span></td>
+                                    <td>{{ equipment.PDR }}</td>
+                                    <td>
+                                        <span class="status-indicator bg-{{ equipment.statut|yesno:'success,danger' }}"></span>
+                                        {{ equipment.statut|yesno:"Actif,Inactif" }}
+                                    </td>
+                                    <td>{{ equipment.criticite }}</td>
+                                    <td>{{ equipment.type_maint }}</td>
+                                    <td class="text-center">{{ equipment.nombre }}</td>
+                                    <td>{{ equipment.date_maint|date:"d/m/Y" }}</td>
+                                    <td class="text-nowrap">
+                                        {% if equipment.N %}
+                                        <a href="{% url 'edit_equipment' equipment.N %}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form method="post" action="{% url 'delete_equipment' equipment.N %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet équipement ?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                        {% else %}
+                                        <button class="btn btn-sm btn-primary" disabled>
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-danger" disabled>
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="11" class="text-center py-4 text-muted">
+                                        <i class="fas fa-box-open fa-2x mb-2"></i><br>
+                                        Aucun équipement trouvé
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

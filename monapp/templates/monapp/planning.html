@@ -1,0 +1,311 @@
+{% extends 'monapp/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planification</title>
+
+    <!-- CSS Styles -->
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            background-color: var(--dark-color);
+            padding-top: 50px;
+        }
+
+        .sidebar-title {
+            color: white;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .nav-pills .nav-link {
+            border-radius: 0.25rem;
+            margin: 0.25rem 0;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .nav-pills .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+        }
+
+        /* Calendar Styles */
+        #calendar {
+            width: 100%;
+            height: 500px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        /* Popup Styles */
+        #popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 1050;
+            width: 400px;
+            max-width: 90%;
+        }
+
+        /* Table Styles */
+        .events-table {
+            margin-top: 30px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            #calendar {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <!-- Sidebar -->
+            <div class="col-auto col-md-3 col-xl-2 px-0 sidebar">
+                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 text-white min-vh-100">
+                    <div style="height: 50px;"></div>
+                    <h5 class="sidebar-title mb-4">Menu Principal</h5>
+
+                    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100">
+                        <li class="nav-item w-100">
+                            <a href="{% url 'accueil' %}" class="nav-link text-white">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'declarer_panne' %}" class="nav-link text-white">
+                                <i class="fa-solid fa-pen-to-square me-2"></i>Déclarer une panne
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'bon_form' %}" class="nav-link text-white">
+                                <i class="fas fa-file-alt me-2"></i>Bon de Travail
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'equipments' %}" class="nav-link text-white">
+                                <i class="fas fa-cogs me-2"></i>Équipements
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'planning' %}" class="nav-link text-white active">
+                                <i class="fas fa-calendar-check me-2"></i>Planification
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'personnel_list' %}" class="nav-link text-white">
+                                <i class="fas fa-users-cog me-2"></i>Personnel
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'historique' %}" class="nav-link text-white">
+                                <i class="fas fa-history me-2"></i>Historique
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'dashboard' %}" class="nav-link text-white">
+                                <i class="fas fa-file-contract me-2"></i>PPR
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="col py-3 main-content">
+                <div class="container">
+                    <!-- Breadcrumb -->
+                     <nav aria-label="breadcrumb">
+                       <ol class="breadcrumb">
+                             <li class="breadcrumb-item"><a href="{% url 'accueil' %}" class="text-secondary">Accueil</a></li>
+                             <li class="breadcrumb-item active" aria-current="page">Calendrier</li>
+                        </ol>
+                     </nav>
+
+                    <!-- Calendar -->
+                    <div id="calendar"></div>
+
+                    <!-- Event Form Popup -->
+                    <div id="popup">
+                        <h3><i class="fa-solid fa-calendar me-2"></i>Ajouter un événement</h3>
+                        <form id="popupForm" method="post" class="mt-3">
+                            {% csrf_token %}
+                            <input type="hidden" id="date" name="date">
+                            <div class="mb-3">
+                                {{ form.type.label_tag }}
+                                {{ form.type }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.duree.label_tag }}
+                                {{ form.duree }}
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                <button type="button" class="btn btn-secondary" onclick="document.getElementById('popup').style.display='none'">Annuler</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Events Table -->
+                    <div class="events-table">
+                        <h3 class="p-3"><i class="fa-solid fa-calendar me-2"></i>Événements planifiés</h3>
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>N°</th>
+                                    <th>Type</th>
+                                    <th>Durée</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ev in eve %}
+                                <tr>
+                                    <td>{{ ev.N }}</td>
+                                    <td>{{ ev.type }}</td>
+                                    <td>{{ ev.duree }}</td>
+                                    <td>{{ ev.jour }}/{{ ev.mois }}/{{ ev.ans }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">
+                                        Aucun événement planifié
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                dateClick: function(info) {
+                    document.getElementById('date').value = info.dateStr;
+                    document.getElementById('popup').style.display = 'block';
+                },
+                events: [
+                    {% for ev in eve %}
+                    {
+                        title: '{{ ev.type }}',
+                        start: '{{ ev.ans }}-{{ ev.mois }}-{{ ev.jour }}',
+                        duration: '{{ ev.duree }}'
+                    },
+                    {% endfor %}
+                ]
+            });
+
+            calendar.render();
+
+            // Handle form submission
+            document.getElementById('popupForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                const formData = new FormData(this);
+
+                axios.post("{% url 'save_planning' %}", formData, {
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                .then(response => {
+                    if (response.data.status === 'success') {
+                        alert('Événement enregistré avec succès');
+                        document.getElementById('popup').style.display = 'none';
+                        window.location.reload();
+                    } else {
+                        alert('Erreur: ' + response.data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Une erreur est survenue lors de l\'enregistrement');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,242 @@
+{% include 'monapp/base.html' %}
+
+{% block content %}
+<body>
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <!-- Sidebar -->
+            <div class="col-auto col-md-3 col-xl-2 px-0 sidebar">
+                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 text-white min-vh-100">
+                    <div style="height: 50px;"></div>
+                    <h5 class="sidebar-title mb-4">Menu Principal</h5>
+                    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100">
+                        <li class="nav-item w-100">
+                            <a href="{% url 'accueil' %}" class="nav-link text-white">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'declarer_panne' %}" class="nav-link text-white">
+                                <i class="fa-solid fa-pen-to-square me-2"></i>Déclarer une panne
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'bon_form' %}" class="nav-link text-white">
+                                <i class="fas fa-file-alt me-2"></i>Bon de Travail
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'equipments' %}" class="nav-link text-white">
+                                <i class="fas fa-cogs me-2"></i>Équipements
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'planning' %}" class="nav-link text-white">
+                                <i class="fas fa-calendar-check me-2"></i>Planification
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'personnel_list' %}" class="nav-link text-white">
+                                <i class="fas fa-users-cog me-2"></i>Personnel
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'historique' %}" class="nav-link text-white">
+                                <i class="fas fa-history me-2"></i>Historique
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'dashboard' %}" class="nav-link text-white active">
+                                <i class="fas fa-file-contract me-2"></i>PPR
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content container mt-4">
+                <div class="d-flex justify-content-between align-items-center mb-5">
+                    <div>
+                        <nav aria-label="breadcrumb">
+                       <ol class="breadcrumb">
+                             <li class="breadcrumb-item"><a href="{% url 'accueil' %}" class="text-secondary">Accueil</a></li>
+                             <li class="breadcrumb-item active" aria-current="page">Analyse de consommation PDR</li>
+                        </ol>
+                     </nav>
+                    </div>
+
+                    {% if chart %}
+                    <a href="{% url 'export_pdf' %}?equipement={{ form.equipement.value }}" class="btn btn-danger d-flex float-end">
+                        <i class="fas fa-file-pdf me-2"></i>Exporter PDF
+                    </a>
+                    {% endif %}
+                </div>
+
+                <h5 class="card-title mb-4 text-secondary">🔍 Filtres de recherche</h5>
+                <form method="get">
+                    <div class="row g-4">
+                        {{ form.as_p }}
+                        <div class="col-12">
+                            <button type="submit" class="btn gradient-btn text-white">
+                                <i class="fas fa-search me-2"></i>Analyser
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                {% if data %}
+                <div class="mt-5">
+                    <h3 class="text-dark">📋 Liste des PDRs</h3>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-modern">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>PDR</th>
+                                    <th>Fournisseur</th>
+                                    <th>Date commande</th>
+                                    <th>Date livraison</th>
+                                    <th class="text-end">Consommation</th>
+                                    <th>Année</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for d in data %}
+                                <tr class="hover-row">
+                                    <td class="fw-bold">{{ d.ID }}</td>
+                                    <td>{{ d.PDR }}</td>
+                                    <td><span class="badge bg-primary">{{ d.fournisseur }}</span></td>
+                                    <td>{{ d.date_commande }}</td>
+                                    <td>{{ d.date_livraison }}</td>
+                                    <td class="text-end">{{ d.consomation }}</td>
+                                    <td><span class="badge bg-success">{{ d.ans }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 class="text-dark">📈 Analyse ABC</h3>
+                    <div class="chart-container">
+                        <img src="data:image/png;base64,{{ chart }}" alt="Graphe ABC" class="img-fluid rounded-3">
+                    </div>
+                </div>
+                {% elif form.is_bound %}
+                <div class="text-center py-5">
+                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                    <h4 class="text-muted">Aucune donnée disponible</h4>
+                    <p class="text-muted mb-0">Veuillez sélectionner un autre équipement</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+
+<style>
+    :root {
+        --sidebar-width: 250px;
+        --primary-color: #3498db;
+        --secondary-color: #2c3e50;
+        --success-color: #2ecc71;
+        --warning-color: #f39c12;
+        --danger-color: #e74c3c;
+        --light-color: #f8f9fa;
+        --dark-color: #343a40;
+    }
+
+    body {
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        background-color: #f5f7fa;
+    }
+
+    .sidebar {
+        width: var(--sidebar-width);
+        min-height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 100;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        background-color: var(--dark-color);
+        padding-top: 50px;
+    }
+
+    .sidebar-title {
+        color: white;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-top: 20px;
+    }
+
+    .nav-pills .nav-link {
+        border-radius: 0.25rem;
+        margin: 0.25rem 0;
+        padding: 0.75rem 1rem;
+        color: rgba(255, 255, 255, 0.8);
+        transition: all 0.3s ease;
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        transform: translateX(5px);
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: 500;
+    }
+
+    .main-content {
+        margin-left: var(--sidebar-width);
+        padding: 20px;
+    }
+
+    .gradient-btn {
+        background: linear-gradient(45deg, #4e73df, #224abe);
+        border: none;
+        border-radius: 8px;
+        padding: 5px 10px;
+    }
+
+    .modern-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .modern-card:hover {
+        transform: translateY(-2px);
+    }
+
+    .table-modern {
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0);
+    }
+
+    .table-modern thead {
+        background: white;
+    }
+
+    .hover-row:hover {
+        background-color: #EBECED !important;
+    }
+
+    .chart-container {
+        border-radius: 15px;
+        background: white;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .table-body-gray {
+        background-color: #f0f0f0;
+    }
+</style>
+
+{% endblock %}

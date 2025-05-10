@@ -1,0 +1,450 @@
+{% extends 'monapp/base.html' %}
+{% block content %}
+
+
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Déclarer une panne</title>
+    <style>
+        :root {
+            --sidebar-width: 250px;
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            padding-top: 50px;
+            background-color: var(--dark-color);
+        }
+
+        .sidebar-title {
+            color: white;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+
+        .nav-pills .nav-link {
+            border-radius: 0.25rem;
+            margin: 0.25rem 0;
+            padding: 0.75rem 1rem;
+            transition: all 0.3s ease;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .nav-pills .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        /* Declaration Page Specific Styles */
+        .declaration-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        h2, h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+
+        h2 {
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .scanner-section {
+            margin-bottom: 15px;
+        }
+
+        .scanner-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .scan-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .scan-btn:hover {
+            background: #2980b9;
+        }
+
+        .qr-reader {
+            margin-top: 15px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .scan-result {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .scan-result.success {
+            display: block;
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .toggle-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: #f5f5f5;
+            border-radius: 5px;
+            color: #333;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .toggle-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .toggle-btn.active {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+
+        .declaration-form {
+            margin-top: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background: #219653;
+        }
+
+        .divider {
+            height: 1px;
+            background: #eee;
+            margin: 25px 0;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toggle-buttons {
+                flex-direction: column;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <!-- Sidebar -->
+            <div class="col-auto col-md-3 col-xl-2 px-0 sidebar">
+                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-4 text-white min-vh-100">
+                    <div style="height: 50px;"></div>
+                    <h5 class="sidebar-title mb-4">Menu Principal</h5>
+
+                    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start w-100">
+                        <li class="nav-item w-100">
+                            <a href="{% url 'accueil' %}" class="nav-link text-white">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'declarer_panne' %}" class="nav-link text-white active">
+                                <i class="fa-solid fa-pen-to-square me-2"></i>Déclarer une panne
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'bon_form' %}" class="nav-link text-white">
+                                <i class="fas fa-file-alt me-2"></i>Bon de Travail
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'equipments' %}" class="nav-link text-white">
+                                <i class="fas fa-cogs me-2"></i>Équipements
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'planning' %}" class="nav-link text-white">
+                                <i class="fas fa-calendar-check me-2"></i>Planification
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'personnel_list' %}" class="nav-link text-white">
+                                <i class="fas fa-users-cog me-2"></i>Personnel
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'historique' %}" class="nav-link text-white">
+                                <i class="fas fa-history me-2"></i>Historique
+                            </a>
+                        </li>
+                        <li class="nav-item w-100">
+                            <a href="{% url 'dashboard' %}" class="nav-link text-white">
+                                <i class="fas fa-file-contract me-2"></i>PPR
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="col py-3 main-content">
+                <div class="declaration-container">
+                    <h2>Déclarer une panne</h2>
+
+                    <!-- SCANNER SECTION -->
+                    <div class="section-card">
+                        <h3>1. Choisir un équipement</h3>
+                        <div class="scanner-section">
+                            <label for="equipment-field">Sélectionner l'équipement :</label>
+                            {{ form.equipment }}
+
+                            <div class="scanner-actions">
+                                <p>ou</p>
+                                <button type="button" class="scan-btn" onclick="startScanner()">
+                                    <span class="icon">📷</span> Scanner un QR Code
+                                </button>
+                            </div>
+
+                            <p id="scan-result" class="scan-result"></p>
+                            <div id="reader" class="qr-reader"></div>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <!-- PANNE TYPE SELECTION -->
+                    <div class="section-card">
+                        <h3>2. Type de panne</h3>
+                        <div class="toggle-buttons">
+                            <a href="?type_panne=existante" class="toggle-btn {% if type_panne == 'existante' %}active{% endif %}">
+                                Panne existante
+                            </a>
+                            <a href="?type_panne=nouvelle" class="toggle-btn {% if type_panne == 'nouvelle' %}active{% endif %}">
+                                Nouvelle panne
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- PANNE FORM SECTION -->
+                    <div class="section-card">
+                        {% if type_panne == "nouvelle" %}
+                            <h3>Déclaration d'une nouvelle panne</h3>
+                            <form method="post" class="declaration-form">
+                                {% csrf_token %}
+                                <div class="form-grid">
+                                    {% for field in form %}
+                                        <div class="form-group">
+                                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                            {{ field }}
+                                            {% if field.help_text %}
+                                                <small class="help-text">{{ field.help_text }}</small>
+                                            {% endif %}
+                                            {% for error in field.errors %}
+                                                <div class="error-message">{{ error }}</div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <button type="submit" class="submit-btn">Déclarer la panne</button>
+                            </form>
+                        {% elif type_panne == "existante" %}
+                            <h3>Déclaration d'une panne existante</h3>
+                            <form method="post" class="declaration-form">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="selected_panne_id">Choisir une panne existante :</label>
+                                    <select name="selected_panne_id" required class="form-select">
+                                        {% for panne in pannes_existantes %}
+                                            <option value="{{ panne.id }}">
+                                                [{{ panne.equipment.nom }}] - {{ panne.panne }} (TTR: {{ panne.ttr }}, Criticité: {{ panne.criticite }})
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <button type="submit" class="submit-btn">Déclarer cette panne</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- html5-qrcode script -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script>
+        let scanner;
+
+        function startScanner() {
+            const readerDiv = document.getElementById("reader");
+
+            if (!scanner) {
+                scanner = new Html5Qrcode("reader");
+            }
+
+            Html5Qrcode.getCameras().then(devices => {
+                if (devices && devices.length) {
+                    const cameraId = devices[0].id;
+                    scanner.start(
+                        cameraId,
+                        { fps: 10, qrbox: 250 },
+                        (decodedText, decodedResult) => {
+                            document.getElementById("scan-result").innerText = "Équipement ID scanné : " + decodedText;
+                            document.getElementById("scan-result").classList.add("success");
+
+                            // Remplir le champ équipement si l'ID correspond
+                            const equipmentSelect = document.getElementById("id_equipment");
+                            for (let i = 0; i < equipmentSelect.options.length; i++) {
+                                if (equipmentSelect.options[i].value === decodedText) {
+                                    equipmentSelect.selectedIndex = i;
+                                    break;
+                                }
+                            }
+
+                            scanner.stop().then(() => {
+                                readerDiv.innerHTML = ""; // Nettoyer l'affichage
+                            });
+                        },
+                        (errorMessage) => {
+                            // Erreurs ignorées
+                        }
+                    );
+                }
+            }).catch(err => {
+                console.error("Erreur caméra :", err);
+            });
+        }
+    </script>
+</body>
+</html>
+{% endblock %}
